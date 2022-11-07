@@ -7,10 +7,25 @@
 .cart h2 {
   font-size: 1.25rem;
   margin: 0.5rem 0;
+  text-align: center;
 }
 
 .cart ul {
   list-style: none;
   padding: 0;
   margin: 0;
+}
+
+.total{
+  color: #1ad1b9;
+  font-weight: 800;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.cart p{
+  color: #1ad1b9;
+  font-weight: 800;
+  font-size: 1.5rem;
+  text-align: center;
 }

@@ -6,11 +6,13 @@ const cartSlice = createSlice({
     items: [], // Termékek
     totalQuantity: 0, // Teljes mennyiség
     changed: false, // Ez ahhoz kell, hogy csak akkor küldjük el az adatokat, ha kerül valami a kosárba.
+    totalPrice: 0   // A kosár tételeinek teljes összege
   },
   reducers: {
     replaceCart(state, action) {
       state.totalQuantity = action.payload.totalQuantity;
       state.items = action.payload.items;
+      state.totalPrice = action.payload.totalPrice;
     },
     // Kosárhoz adás
     addItemToCart(state, action) {
@@ -28,11 +30,13 @@ const cartSlice = createSlice({
           name: newItem.title,
         });
         state.totalQuantity++;
+        state.totalPrice = state.totalPrice + newItem.price
       } else {
         // Ha ez a termék már létezik a kosárban, akkor frissíteni szeretném a terméket.
         // Ugye az "itemId" a "price" és a "name" nem változik.
         existingItem.quantity++; // A teljes mennyiséget kell megpluszolni egyet a termékből.
         existingItem.totalPrice = existingItem.totalPrice + newItem.price; // És az eddigi teljes összeghez kell hozzáadnunk a termék árát.
+        state.totalPrice = state.totalPrice + newItem.price
         state.totalQuantity++;
       }
     },
@@ -47,10 +51,12 @@ const cartSlice = createSlice({
         //  Ez felülírja az elemek tömbjét egy új tömbbel, ahol ez az elem, amelyiket el akarunk távolítnai, hiányozni fog.
         state.items = state.items.filter((item) => item.id !== id); // Azok az elemek, amik nem egyenlőek a keresett termékkel (id) visszaadja őket egy új tömbben, amit ugye feljebb is írtam. A többit nem adja vissza, ergo törölve lesznek.
         state.totalQuantity--;
+        state.totalPrice = state.totalPrice - existingItem.price
       } else {
         // Ha nagyobb egynél...
         existingItem.quantity--; // ...akkor csak csökkenteni szeretnénk a mennyiségét egyel.
         existingItem.totalPrice = existingItem.totalPrice - existingItem.price; // És csökkent kell a teljes fizetendö összeget is az eltávolított termék összegével.
+        state.totalPrice = state.totalPrice - existingItem.price
         state.totalQuantity--;
       }
     },

@@ -18,7 +18,8 @@ export const fetchCartData = () => {
       const cartData = await fetchData();
       dispatch(cartActions.replaceCart({
         items: cartData.items || [],    // Ha van termék a akosárban akkor jelenítse meg, ha nincs akkor az 'items' egyenlő egy üres tömbbel.
-        totalQuantity: cartData.totalQuantity
+        totalQuantity: cartData.totalQuantity,
+        totalPrice: cartData.totalPrice
       }))
     } catch (error) {
       dispatch(
