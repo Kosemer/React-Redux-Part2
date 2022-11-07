@@ -2,12 +2,13 @@ import Cart from "./components/Cart/Cart";
 import Layout from "./components/Layout/Layout";
 import Products from "./components/Shop/Products";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { uiSliceActions } from "./components/store/UI-slice";
-import { Fragment } from "react";
+import { useEffect, Fragment } from "react";
+//import { uiSliceActions } from "./components/store/UI-slice";
 import Notification from "./components/UI/Notification";
+import { sendCartData } from './components/store/Cart-actions';
+import { fetchCartData } from './components/store/Cart-actions'
 
-let isInitial = true;   // Ez a változó arra kell, hogy ne jelenítsen meg az oldal betöltésekor 'Success' üzenetet felül. Az 'App'-on kívül kell definiálni, hogy újrafutáskor(useEffect) ne értékelje ki.
+let isInitial = true; // Ez a változó arra kell, hogy ne jelenítsen meg az oldal betöltésekor 'Success' üzenetet felül. Az 'App'-on kívül kell definiálni, hogy újrafutáskor(useEffect) ne értékelje ki.
 
 function App() {
   const showCart = useSelector((state) => state.ui.cartIsVisible);
@@ -15,9 +16,27 @@ function App() {
   const cart = useSelector((state) => state.cart);
   const notification = useSelector((state) => state.ui.notification);
 
+  useEffect(() => {
+    dispatch(fetchCartData());
+  }, [dispatch])
 
   useEffect(() => {
-    const sendCartData = async () => {
+    if (isInitial) {
+      //  Ha ez 'true' akkor ne hajtsa végre a catch ágat. De egyben beállítom 'false'-ra, hogy újraértékeléskor már jelenítse meg a catch ágat.
+      isInitial = false;
+      return;
+    }
+    if(cart.changed){
+      dispatch(sendCartData(cart));
+    }
+    /*const sendCartData = async () => {
+      dispatch(
+        uiSliceActions.showNotification({
+          status: 'pending',
+          title: 'Sending...',
+          message: 'Sending cart data!'
+        })
+      )
       const response = await fetch(
         "https://productsredux-4f384-default-rtdb.firebaseio.com/cart.json",
         {
@@ -50,7 +69,7 @@ function App() {
           message: "Sending cart data failed!",
         })
       );
-    });
+    });*/
   }, [cart, dispatch]); // És kell hozzá a függőség is, hogy a 'useEffect' újra lefusson, amikor a kosár változik.
 
   return (

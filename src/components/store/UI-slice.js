@@ -19,4 +19,4 @@ const uiSlicec = createSlice({
 
 export default uiSlicec;
 
-export const uiSliceActions = uiSlicec.actions;
+export const uiActions = uiSlicec.actions;
